@@ -11,6 +11,7 @@ Para poder iniciar el juego hay que instalar el apk del mismo. Una vez iniciado,
 	- Disparar: Click primario(izquierdo) del mouse
 	- Recargar: “R”
 	- Agacharse - Pararse: “C”
+	
 - Android + Gamepad:
 	- Apuntar: Movimiento del móvil(Giroscopio)
 	- Disparar: “R1”
