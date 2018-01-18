@@ -14,25 +14,23 @@ public class Atacar : MonoBehaviour {
 
     private Coroutine disparar;
 
-	// Use this for initialization
+
 	void Start () {
 		anim = GetComponentInChildren<Animator> ();
 		arma = GetComponentInChildren<AttachWeapon>().Weapon;
 		objetivo = GameObject.Find ("Jugador").GetComponent<Transform> ();
 
         precision = 100f;
-
-
+        
         disparar = null;
 	}
 	
-	// Update is called once per frame
+	
 	void Update () {
 
         if (anim.gameObject.activeSelf)
         {
-
-
+            
             if (disparar == null)
             {
                 disparar = StartCoroutine(Disparar());
@@ -51,7 +49,7 @@ public class Atacar : MonoBehaviour {
             }
         }
 
-		Debug.DrawRay (arma.position, arma.forward * alcance, Color.red);
+		//Debug.DrawRay (arma.position, arma.forward * alcance, Color.red);
 	}
 
 	IEnumerator Disparar() {

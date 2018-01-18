@@ -14,6 +14,7 @@ public class ControladorJuego : MonoBehaviour {
     private GameObject plataforma;
 	private GameObject enemigos;
 	private GameObject interfaz;
+	private GameObject puntuacion;
 	private int localizacion;
 	private bool cubierto;
 	private Vector3 actualPosicion;
@@ -35,13 +36,15 @@ public class ControladorJuego : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
+	
 	void Start () {
 		plataforma = GameObject.Find ("Plataforma");
 		interfaz = GameObject.Find("CanvasInterfaz");
+		puntuacion = GameObject.Find("Puntuacion");
 		enemigos = GameObject.Find ("Enemigos");
         menu = GameObject.Find("Canvas");
 
+        // Zonas con enemigos
         int nZonas = enemigos.GetComponent<Transform>().childCount;
         zonas = new GameObject[nZonas];
 
@@ -51,8 +54,6 @@ public class ControladorJuego : MonoBehaviour {
             zonas[i] = zona.gameObject;
             zonas[i].SetActive(false);           
         }
-        
-        
 
         localizacion = 0;
 		cubierto = false;
@@ -60,14 +61,15 @@ public class ControladorJuego : MonoBehaviour {
 		numeroEnemigos = 0;
 		
 		interfaz.SetActive(false);
-                
+       	puntuacion.SetActive(false); 
     }
 	
-	// Update is called once per frame
+	
 	void Update () {
 		disparo ();
     }
 
+    // Empezar el juego desde la primera zona
    	public void empezarJuego () {
    		menu.SetActive(false);
    		interfaz.SetActive(true);
@@ -79,19 +81,16 @@ public class ControladorJuego : MonoBehaviour {
         activarZona(localizacion);		
    	}
     
+    // Controles del jugador: disparar, recargar, agacharse - pararse
 	public void disparo() {
         
-        if ( Input.GetButtonDown("R1")) {
-			//Debug.Log("RIGHT");
-
+        if ( Input.GetButtonDown("R1")) { // Disparar
 			if (DisparoIzq != null) {			
 				DisparoIzq ();
 			}
 		}
 
-		if (Input.GetButtonDown("B")) {
-			//Debug.Log("LEFT");
-       
+		if (Input.GetButtonDown("B")) { // Agacharse - Pararse      
 			if (cubierto) {
 				StartCoroutine (corutinaPararse());
 				cubierto = false;
@@ -102,7 +101,7 @@ public class ControladorJuego : MonoBehaviour {
 			}
 		}
 
-        if (Input.GetButtonDown("X"))
+        if (Input.GetButtonDown("X")) // Recargar
         {
             Recarga();
         }
@@ -111,12 +110,12 @@ public class ControladorJuego : MonoBehaviour {
 	public void reducirEnemigos() {
 		numeroEnemigos--;
 
-		if (numeroEnemigos == 0) {
+		if (numeroEnemigos == 0) { // Si no hay enemigos, pasar a otra zona
 			localizacion++;
 
 			switch(localizacion) {
 			case 1:
-				StartCoroutine (corutinaRelocalizar1()); // Animacion de relocalizacion
+				StartCoroutine (corutinaRelocalizar1()); // Movimiento de relocalizacion
 				break;
 			case 2:
 				StartCoroutine (corutinaRelocalizar2());
@@ -140,20 +139,7 @@ public class ControladorJuego : MonoBehaviour {
             }
 		}
 	}
-
-    public void setEnBoton()
-    {       
-        if (Input.GetButtonDown("R1") )
-        {
-            empezarJuego();
-        }
-    }
-     
-
-    public void gameOver() {
-		//Debug.Log ("GAME OVER");
-	}
-
+   
     void activarZona(int zona)
     {
         zonas[zona].SetActive(true);
@@ -188,7 +174,7 @@ public class ControladorJuego : MonoBehaviour {
 			Vector3 inicioPos = new Vector3 (148.04f, 3.93f, 44.15f);
 			Vector3 finPos = new Vector3 (143.47f, 3.93f, 44.15f);
 			Vector3 nuevoPosicion = Vector3.Lerp (inicioPos, finPos, t);
-			actualPosicion = nuevoPosicion; // Mejor actualizar al final de la relocalizacion??  Se evata inicioPos?
+			actualPosicion = nuevoPosicion; 
 			plataforma.GetComponent<Transform> ().position = nuevoPosicion;
 			yield return null;
 		}
@@ -320,7 +306,7 @@ public class ControladorJuego : MonoBehaviour {
 
     IEnumerator corutinaRelocalizar6()
     {
-        float duracion = 1.0f;
+        float duracion = 2.0f;
         for (float t = 0.0f; t <= 1.0f; t += Time.deltaTime / duracion)
         {
             Vector3 inicioPos = new Vector3(143.1f, 3.93f, 10.111f);
@@ -331,7 +317,7 @@ public class ControladorJuego : MonoBehaviour {
             yield return null;
         }
 
-        duracion = 1.5f;
+        duracion = 2.0f;
         for (float t = 0.0f; t <= 1.0f; t += Time.deltaTime / duracion)
         {
             Vector3 inicioPos = new Vector3(154.25f, 3.93f, 28.06f);
@@ -378,9 +364,25 @@ public class ControladorJuego : MonoBehaviour {
 
         menu.SetActive(true);
              
-        //enemigos.SetActiveRecursively(true);
-
         GameObject.Find("TextoStart").GetComponent<Text>().text = "Next level";
+        puntuacion.SetActive(true);
+        calcularPuntuacion();
+    }
+
+    private void calcularPuntuacion() {
+       	GameObject textoPuntuacion = GameObject.Find("TextoPuntuacion");
+       	Text texto_puntuacion = textoPuntuacion.GetComponent<Text>();
+    	GameObject jugador = GameObject.Find("Jugador");
+		VidaJugador vidaJugador = jugador.GetComponent<VidaJugador>();
+
+		if(vidaJugador.vida > 90)
+			texto_puntuacion.text = "TE HAN SOBRADO MÁS DE 90 VIDAS, MUY BIEN!";
+		else if(vidaJugador.vida > 50)
+			texto_puntuacion.text = "TE HAN SOBRADO MÁS DE 50 VIDAS, BIEN!";
+		else if((vidaJugador.vida < 50) && (vidaJugador.vida > 0))
+			texto_puntuacion.text = "TE HAN SOBRADO MENOS DE 50 VIDAS, HA ESTADO REGULAR";
+		else if(vidaJugador.vida <= 0)
+			texto_puntuacion.text = "NIVEL NO SUPERADO";
     }
     
 }

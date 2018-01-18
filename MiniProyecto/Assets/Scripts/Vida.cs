@@ -8,16 +8,12 @@ public class Vida : MonoBehaviour {
     private Animator anim;
     private float tiempoMuerte = 10f;
 
-    // Use this for initialization
+   
     void Start () {
         anim = GetComponent<Animator>();
     }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
+	
 	public void PerderVida(float cantidad) {
 		vida -= cantidad;
 		if ((vida <= 0f) && !anim.GetBool("muriendo")) {
@@ -35,9 +31,7 @@ public class Vida : MonoBehaviour {
         yield return new WaitForSeconds(tiempoMuerte);
 
         anim.SetBool("muriendo", false);
-        gameObject.transform.parent.gameObject.SetActive(false);
-        
-        //Destroy(gameObject.transform.parent.gameObject);
+        gameObject.transform.parent.gameObject.SetActive(false);     
 
     }
 }

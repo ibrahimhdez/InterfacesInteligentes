@@ -6,14 +6,13 @@ using UnityEngine.UI;
 public class MunicionTexto : MonoBehaviour {
 	public Arma arma;
 	public Text texto;
-
-	// Use this for initialization
+    	
 	void Start () {
 		arma = GameObject.Find("SciFiGunLightRad").GetComponent<Arma>();
 		texto = GetComponent<Text>();
 	}
 	
-	// Update is called once per frame
+
 	void Update () {
 		actualizarMunicion();
 	}

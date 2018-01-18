@@ -18,7 +18,7 @@ public class Arma : MonoBehaviour {
     private AudioSource audioRecarga;
     private Animator anim;
 
-    // Use this for initialization
+   
     void Start () {
 		ControladorJuego.DisparoIzq += Disparar;
         ControladorJuego.Recarga += Recargar;
@@ -28,24 +28,19 @@ public class Arma : MonoBehaviour {
         anim = GetComponent<Animator>();
     }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
+	
 	void Disparar() {
         if((municion > 0) && !recargando)
         {
             RaycastHit impacto;
-            efectoDisparo.Play();
+            efectoDisparo.Play(); 
             efectoDisparoTraza.Play();
 
             GetComponent<AudioSource>().Play(); // Sonido de disparo	
 
             if (Physics.Raycast(jugador.transform.position, jugador.transform.forward, out impacto, alcance))
             {
-                //Debug.Log (impacto.transform.name);
-           
+                           
                 Vida vida = impacto.transform.GetComponent<Vida>();
                 if (vida != null)
                 {
